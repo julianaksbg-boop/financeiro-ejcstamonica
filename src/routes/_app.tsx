@@ -1,10 +1,11 @@
 import { Link, Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, Receipt, CalendarRange, HandCoins, Upload, FileBarChart, LogOut, Wallet, Bell, Menu } from "lucide-react";
+import { LayoutDashboard, Receipt, CalendarRange, HandCoins, Upload, FileBarChart, LogOut, Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import ejcLogo from "@/assets/ejc-logo-vermelho.png.asset.json";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -26,8 +27,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <div className="px-5 py-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="size-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-            <Wallet className="size-5 text-primary-foreground" />
+          <div className="size-11 rounded-lg bg-white border border-sidebar-border flex items-center justify-center overflow-hidden shadow-card">
+            <img src={ejcLogo.url} alt="EJC Santa Mônica e Santa Elena Guerra" className="size-9 object-contain" />
           </div>
           <div>
             <p className="font-bold tracking-tight">Financeiro EJC</p>
