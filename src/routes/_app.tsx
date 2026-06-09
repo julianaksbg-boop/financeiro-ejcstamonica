@@ -1,10 +1,11 @@
 import { Link, Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, Receipt, CalendarRange, HandCoins, Upload, FileBarChart, LogOut, Wallet, Bell, Menu } from "lucide-react";
+import { LayoutDashboard, Receipt, CalendarRange, HandCoins, Upload, FileBarChart, LogOut, Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import ejcLogo from "@/assets/ejc-logo-vermelho.png.asset.json";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
