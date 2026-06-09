@@ -42,13 +42,13 @@ function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-surface">
       <div className="w-full max-w-md">
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="size-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-elevated">
-            <Wallet className="size-6 text-primary-foreground" />
+        <div className="flex flex-col items-center gap-3 mb-8">
+          <div className="size-20 rounded-2xl bg-white border flex items-center justify-center shadow-elevated overflow-hidden">
+            <img src={ejcLogo.url} alt="EJC Santa Mônica e Santa Elena Guerra" className="size-16 object-contain" />
           </div>
-          <div>
+          <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight">Financeiro EJC</h1>
-            <p className="text-xs text-muted-foreground">Encontro de Jovens com Cristo</p>
+            <p className="text-xs text-muted-foreground">Sta. Mônica e Sta. Elena Guerra</p>
           </div>
         </div>
 
