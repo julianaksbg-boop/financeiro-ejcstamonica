@@ -90,8 +90,7 @@ function AuthPage() {
         </Card>
 
         <p className="text-center text-xs text-muted-foreground mt-6">
-          Acesso restrito ao administrador financeiro e à coordenação do EJC.<br />
-          Novas contas ficam pendentes até aprovação do administrador.
+          Acesso restrito ao G20 — Equipe Dirigente EJC
         </p>
       </div>
     </div>
