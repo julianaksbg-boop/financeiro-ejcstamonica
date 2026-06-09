@@ -2,45 +2,99 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
+export type AppRole = "admin" | "viewer";
+export type UserStatus = "pending" | "active" | "blocked";
+
+export interface Profile {
+  id: string;
+  email: string;
+  full_name: string | null;
+  status: UserStatus;
+  approved_at: string | null;
+  approved_by: string | null;
+  created_at: string;
+}
+
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
+  profile: Profile | null;
+  role: AppRole | null;
   loading: boolean;
+  isAdmin: boolean;
+  isViewer: boolean;
+  isActive: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+async function loadProfileAndRole(userId: string): Promise<{ profile: Profile | null; role: AppRole | null }> {
+  const [{ data: p }, { data: r }] = await Promise.all([
+    supabase.from("profiles").select("id,email,full_name,status,approved_at,approved_by,created_at").eq("id", userId).maybeSingle(),
+    supabase.from("user_roles").select("role").eq("user_id", userId).order("role", { ascending: true }),
+  ]);
+  // If user has admin role, prefer admin
+  const roles = (r ?? []).map((x) => x.role as AppRole);
+  const role: AppRole | null = roles.includes("admin") ? "admin" : roles.includes("viewer") ? "viewer" : null;
+  return { profile: (p as Profile | null) ?? null, role };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const hydrate = async (s: Session | null) => {
+    setSession(s);
+    setUser(s?.user ?? null);
+    if (s?.user) {
+      const { profile: p, role: r } = await loadProfileAndRole(s.user.id);
+      setProfile(p);
+      setRole(r);
+    } else {
+      setProfile(null);
+      setRole(null);
+    }
+  };
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
+      // defer to avoid deadlocks
+      setTimeout(() => { void hydrate(s); }, 0);
     });
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
+    supabase.auth.getSession().then(async ({ data: { session: s } }) => {
+      await hydrate(s);
       setLoading(false);
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  const refreshProfile = async () => {
+    if (!user) return;
+    const { profile: p, role: r } = await loadProfileAndRole(user.id);
+    setProfile(p);
+    setRole(r);
+  };
 
   const signIn: AuthContextValue["signIn"] = async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message ?? null };
   };
 
-  const signUp: AuthContextValue["signUp"] = async (email, password) => {
+  const signUp: AuthContextValue["signUp"] = async (email, password, fullName) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: fullName ? { full_name: fullName } : undefined,
+      },
     });
     return { error: error?.message ?? null };
   };
@@ -49,8 +103,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const isAdmin = role === "admin";
+  const isViewer = role === "viewer";
+  const isActive = profile?.status === "active";
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, isAdmin, isViewer, isActive, signIn, signUp, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
