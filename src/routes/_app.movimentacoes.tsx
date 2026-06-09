@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowDownRight, ArrowUpRight, Search, Sparkles, Check, FileUp } from "lucide-react";
-import { MOVIMENTACOES, EVENTOS, EQUIPES, PILARES, FORMAS_PAGAMENTO, formatBRL, type Movimentacao } from "@/lib/mock-data";
+import { EVENTOS, EQUIPES, PILARES, FORMAS_PAGAMENTO, formatBRL, type Movimentacao } from "@/lib/mock-data";
+import { useMovimentacoes } from "@/lib/movimentacoes-store";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/movimentacoes")({
@@ -22,8 +23,9 @@ function MovimentacoesPage() {
   const [filtro, setFiltro] = useState<"todas" | "pendentes" | "sugeridas" | "classificadas">("todas");
   const [busca, setBusca] = useState("");
   const [selected, setSelected] = useState<Movimentacao | null>(null);
+  const all = useMovimentacoes((s) => s.items);
 
-  const items = MOVIMENTACOES.filter((m) => {
+  const items = all.filter((m) => {
     if (filtro === "pendentes" && m.status !== "Pendente") return false;
     if (filtro === "sugeridas" && m.status !== "Sugerida") return false;
     if (filtro === "classificadas" && m.status !== "Classificada") return false;
@@ -32,10 +34,10 @@ function MovimentacoesPage() {
   });
 
   const counts = {
-    todas: MOVIMENTACOES.length,
-    pendentes: MOVIMENTACOES.filter((m) => m.status === "Pendente").length,
-    sugeridas: MOVIMENTACOES.filter((m) => m.status === "Sugerida").length,
-    classificadas: MOVIMENTACOES.filter((m) => m.status === "Classificada").length,
+    todas: all.length,
+    pendentes: all.filter((m) => m.status === "Pendente").length,
+    sugeridas: all.filter((m) => m.status === "Sugerida").length,
+    classificadas: all.filter((m) => m.status === "Classificada").length,
   };
 
   return (
@@ -128,10 +130,11 @@ function MovimentacoesPage() {
 }
 
 function ClassifySheet({ item, onClose }: { item: Movimentacao | null; onClose: () => void }) {
-  const [tipo, setTipo] = useState(item?.tipo ?? (item && item.valor >= 0 ? "Receita" : "Despesa"));
+  const update = useMovimentacoes((s) => s.update);
+  const [tipo, setTipo] = useState<Movimentacao["tipo"] | "">(item?.tipo ?? (item && item.valor >= 0 ? "Receita" : "Despesa"));
   const [evento, setEvento] = useState(item?.evento ?? "");
   const [responsavel, setResponsavel] = useState(item?.responsavel ?? "");
-  const [forma, setForma] = useState(item?.formaPagamento ?? "");
+  const [forma, setForma] = useState<Movimentacao["formaPagamento"] | "">(item?.formaPagamento ?? "");
   const [obs, setObs] = useState(item?.observacao ?? "");
 
   if (!item) return null;
@@ -224,7 +227,18 @@ function ClassifySheet({ item, onClose }: { item: Movimentacao | null; onClose: 
 
           <div className="flex gap-2 pt-2 pb-6">
             <Button variant="outline" className="flex-1" onClick={onClose}>Cancelar</Button>
-            <Button className="flex-1" onClick={() => { toast.success("Movimentação classificada com sucesso"); onClose(); }}>
+            <Button className="flex-1" onClick={() => {
+              update(item.id, {
+                tipo: (tipo || undefined) as Movimentacao["tipo"],
+                evento: evento || undefined,
+                responsavel: responsavel || undefined,
+                formaPagamento: (forma || undefined) as Movimentacao["formaPagamento"],
+                observacao: obs || undefined,
+                status: "Classificada",
+              });
+              toast.success("Movimentação classificada com sucesso");
+              onClose();
+            }}>
               <Check className="size-4 mr-1" /> Confirmar
             </Button>
           </div>
