@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
-import { Wallet } from "lucide-react";
+import ejcLogo from "@/assets/ejc-logo-vermelho.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Entrar — Financeiro EJC" }] }),
