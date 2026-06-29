@@ -14,7 +14,6 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppMovimentacoesRouteImport } from './routes/_app.movimentacoes'
-import { Route as AppImportarRouteImport } from './routes/_app.importar'
 import { Route as AppEventosRouteImport } from './routes/_app.eventos'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAdministracaoRouteImport } from './routes/_app.administracao'
@@ -42,11 +41,6 @@ const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
 const AppMovimentacoesRoute = AppMovimentacoesRouteImport.update({
   id: '/movimentacoes',
   path: '/movimentacoes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppImportarRoute = AppImportarRouteImport.update({
-  id: '/importar',
-  path: '/importar',
   getParentRoute: () => AppRoute,
 } as any)
 const AppEventosRoute = AppEventosRouteImport.update({
@@ -77,7 +71,6 @@ export interface FileRoutesByFullPath {
   '/administracao': typeof AppAdministracaoRoute
   '/dashboard': typeof AppDashboardRoute
   '/eventos': typeof AppEventosRoute
-  '/importar': typeof AppImportarRoute
   '/movimentacoes': typeof AppMovimentacoesRoute
   '/relatorios': typeof AppRelatoriosRoute
 }
@@ -88,7 +81,6 @@ export interface FileRoutesByTo {
   '/administracao': typeof AppAdministracaoRoute
   '/dashboard': typeof AppDashboardRoute
   '/eventos': typeof AppEventosRoute
-  '/importar': typeof AppImportarRoute
   '/movimentacoes': typeof AppMovimentacoesRoute
   '/relatorios': typeof AppRelatoriosRoute
 }
@@ -101,7 +93,6 @@ export interface FileRoutesById {
   '/_app/administracao': typeof AppAdministracaoRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/eventos': typeof AppEventosRoute
-  '/_app/importar': typeof AppImportarRoute
   '/_app/movimentacoes': typeof AppMovimentacoesRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
 }
@@ -114,7 +105,6 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/dashboard'
     | '/eventos'
-    | '/importar'
     | '/movimentacoes'
     | '/relatorios'
   fileRoutesByTo: FileRoutesByTo
@@ -125,7 +115,6 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/dashboard'
     | '/eventos'
-    | '/importar'
     | '/movimentacoes'
     | '/relatorios'
   id:
@@ -137,7 +126,6 @@ export interface FileRouteTypes {
     | '/_app/administracao'
     | '/_app/dashboard'
     | '/_app/eventos'
-    | '/_app/importar'
     | '/_app/movimentacoes'
     | '/_app/relatorios'
   fileRoutesById: FileRoutesById
@@ -185,13 +173,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMovimentacoesRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/importar': {
-      id: '/_app/importar'
-      path: '/importar'
-      fullPath: '/importar'
-      preLoaderRoute: typeof AppImportarRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/eventos': {
       id: '/_app/eventos'
       path: '/eventos'
@@ -228,7 +209,6 @@ interface AppRouteChildren {
   AppAdministracaoRoute: typeof AppAdministracaoRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEventosRoute: typeof AppEventosRoute
-  AppImportarRoute: typeof AppImportarRoute
   AppMovimentacoesRoute: typeof AppMovimentacoesRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
 }
@@ -238,7 +218,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdministracaoRoute: AppAdministracaoRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEventosRoute: AppEventosRoute,
-  AppImportarRoute: AppImportarRoute,
   AppMovimentacoesRoute: AppMovimentacoesRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
 }
