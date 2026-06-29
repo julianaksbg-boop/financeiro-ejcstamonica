@@ -36,6 +36,29 @@ export const EVENTOS = [
 
 export const FORMAS_PAGAMENTO = ["PIX", "Débito", "Crédito", "Dinheiro", "Transferência"] as const;
 
+export const CATEGORIAS_RECEITA = [
+  "Inscrições",
+  "Doações",
+  "Rifa",
+  "Quitandas",
+  "Santa Massa",
+  "Confraternização",
+  "Outros",
+] as const;
+
+export const CATEGORIAS_DESPESA = [
+  "Alimentação",
+  "Materiais",
+  "Decoração",
+  "Gráfica e Comunicação",
+  "Camisetas",
+  "Aluguel de Espaço",
+  "Transporte",
+  "Música e Som",
+  "Premiação",
+  "Outros",
+] as const;
+
 export type TipoMovimentacao = "Receita" | "Despesa" | "Adiantamento";
 export type StatusMovimentacao = "Classificada" | "Pendente" | "Sugerida";
 
@@ -51,6 +74,7 @@ export interface Movimentacao {
   evento?: string;
   responsavel?: string;
   formaPagamento?: typeof FORMAS_PAGAMENTO[number];
+  categoria?: string;
   observacao?: string;
   status: StatusMovimentacao;
   comprovante?: string;
