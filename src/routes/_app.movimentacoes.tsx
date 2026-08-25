@@ -59,9 +59,10 @@ const COL_LABELS: Record<Col, string> = {
 const PAGE_SIZE = 20;
 
 function CentralPage() {
+  const search = Route.useSearch();
   const items = useMovimentacoes((s) => s.items);
   const lastImport = useMovimentacoes((s) => s.lastImport);
-  const [importOpen, setImportOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(search.import === "1");
   const [sheetItem, setSheetItem] = useState<Movimentacao | null>(null);
   const [isNew, setIsNew] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
