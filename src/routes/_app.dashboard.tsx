@@ -71,7 +71,7 @@ function DashboardPage() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" asChild>
-            <Link to="/importar">Importar extrato</Link>
+            <Link to="/movimentacoes" search={{ import: "1" }}>Importar extrato</Link>
           </Button>
           <Button asChild>
             <Link to="/movimentacoes">Classificar lançamentos</Link>
