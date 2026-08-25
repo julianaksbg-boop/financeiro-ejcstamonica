@@ -26,7 +26,19 @@ import { BulkBar } from "@/components/movimentacoes/bulk-bar";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/movimentacoes")({
-  head: () => ({ meta: [{ title: "Central de movimentações — Financeiro EJC" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    import: search.import === "1" ? "1" : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Central de movimentações — Financeiro EJC" },
+      { name: "description", content: "Importe extratos, classifique movimentações e acompanhe pendências financeiras do EJC." },
+      { property: "og:title", content: "Central de movimentações — Financeiro EJC" },
+      { property: "og:description", content: "Importe extratos, classifique movimentações e acompanhe pendências financeiras do EJC." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: CentralPage,
 });
 
