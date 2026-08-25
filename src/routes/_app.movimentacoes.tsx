@@ -26,9 +26,8 @@ import { BulkBar } from "@/components/movimentacoes/bulk-bar";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_app/movimentacoes")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    import: search.import === "1" ? "1" : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { import?: "1" } =>
+    search.import === "1" ? { import: "1" } : {},
   head: () => ({
     meta: [
       { title: "Central de movimentações — Financeiro EJC" },
