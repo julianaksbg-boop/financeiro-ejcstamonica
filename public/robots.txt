@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /movimentacoes
+Disallow: /adiantamentos
+Disallow: /eventos
+Disallow: /relatorios
+Disallow: /administracao
+
+Sitemap: https://financeiro-ejcstamonica.lovable.app/sitemap.xml
