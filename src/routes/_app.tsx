@@ -101,7 +101,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function AccessGate({ status }: { status: "pending" | "blocked" | "no-role" }) {
+function AccessGate({ status }: { status: "pending" | "blocked" | "no-role" | "missing-profile" | "profile-error" }) {
   const { signOut, user } = useAuth();
   const config = {
     pending: {
@@ -121,6 +121,18 @@ function AccessGate({ status }: { status: "pending" | "blocked" | "no-role" }) {
       title: "Sem permissões atribuídas",
       msg: "Sua conta ainda não possui um perfil de acesso configurado. Solicite ao administrador.",
       tone: "bg-muted text-muted-foreground",
+    },
+    "missing-profile": {
+      icon: Lock,
+      title: "Cadastro incompleto",
+      msg: "Não encontramos o cadastro de acesso desta conta. Solicite ao administrador para revisar seu usuário no painel de administração.",
+      tone: "bg-muted text-muted-foreground",
+    },
+    "profile-error": {
+      icon: Lock,
+      title: "Não foi possível carregar o acesso",
+      msg: "Tente entrar novamente. Se o problema continuar, solicite ao administrador para revisar seu usuário.",
+      tone: "bg-destructive/10 text-destructive",
     },
   }[status];
   const Icon = config.icon;
@@ -144,7 +156,7 @@ function AccessGate({ status }: { status: "pending" | "blocked" | "no-role" }) {
 }
 
 function AppLayout() {
-  const { user, loading, profile, role } = useAuth();
+  const { user, loading, profile, role, profileLoaded, profileError } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -159,9 +171,11 @@ function AppLayout() {
     );
   }
 
-  if (!profile) {
+  if (!profileLoaded) {
     return <div className="min-h-screen flex items-center justify-center text-sm text-muted-foreground">Carregando perfil...</div>;
   }
+  if (profileError) return <AccessGate status="profile-error" />;
+  if (!profile) return <AccessGate status="missing-profile" />;
   if (profile.status === "pending") return <AccessGate status="pending" />;
   if (profile.status === "blocked") return <AccessGate status="blocked" />;
   if (!role) return <AccessGate status="no-role" />;
