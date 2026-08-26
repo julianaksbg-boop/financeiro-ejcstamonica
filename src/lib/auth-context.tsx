@@ -15,6 +15,12 @@ export interface Profile {
   created_at: string;
 }
 
+interface ProfileAndRoleResult {
+  profile: Profile | null;
+  role: AppRole | null;
+  error: string | null;
+}
+
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
@@ -24,6 +30,8 @@ interface AuthContextValue {
   isAdmin: boolean;
   isViewer: boolean;
   isActive: boolean;
+  profileLoaded: boolean;
+  profileError: string | null;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -32,15 +40,19 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-async function loadProfileAndRole(userId: string): Promise<{ profile: Profile | null; role: AppRole | null }> {
-  const [{ data: p }, { data: r }] = await Promise.all([
+async function loadProfileAndRole(userId: string): Promise<ProfileAndRoleResult> {
+  const [{ data: p, error: profileError }, { data: r, error: roleError }] = await Promise.all([
     supabase.from("profiles").select("id,email,full_name,status,approved_at,approved_by,created_at").eq("id", userId).maybeSingle(),
     supabase.from("user_roles").select("role").eq("user_id", userId).order("role", { ascending: true }),
   ]);
   // If user has admin role, prefer admin
   const roles = (r ?? []).map((x) => x.role as AppRole);
   const role: AppRole | null = roles.includes("admin") ? "admin" : roles.includes("viewer") ? "viewer" : null;
-  return { profile: (p as Profile | null) ?? null, role };
+  return {
+    profile: (p as Profile | null) ?? null,
+    role,
+    error: profileError?.message ?? roleError?.message ?? null,
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -48,18 +60,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const hydrate = async (s: Session | null) => {
     setSession(s);
     setUser(s?.user ?? null);
+    setProfileLoaded(false);
+    setProfileError(null);
     if (s?.user) {
-      const { profile: p, role: r } = await loadProfileAndRole(s.user.id);
+      const { profile: p, role: r, error } = await loadProfileAndRole(s.user.id);
       setProfile(p);
       setRole(r);
+      setProfileError(error);
+      setProfileLoaded(true);
     } else {
       setProfile(null);
       setRole(null);
+      setProfileLoaded(true);
     }
   };
 
@@ -77,9 +96,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshProfile = async () => {
     if (!user) return;
-    const { profile: p, role: r } = await loadProfileAndRole(user.id);
+    setProfileLoaded(false);
+    const { profile: p, role: r, error } = await loadProfileAndRole(user.id);
     setProfile(p);
     setRole(r);
+    setProfileError(error);
+    setProfileLoaded(true);
   };
 
   const signIn: AuthContextValue["signIn"] = async (email, password) => {
@@ -108,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isActive = profile?.status === "active";
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, isAdmin, isViewer, isActive, signIn, signUp, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, isAdmin, isViewer, isActive, profileLoaded, profileError, signIn, signUp, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
