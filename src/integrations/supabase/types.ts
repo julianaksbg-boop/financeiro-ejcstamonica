@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_categories: {
+        Row: {
+          archived_at: string | null
+          created_at: string
+          description: string | null
+          group_id: string
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["account_status"]
+          updated_at: string
+        }
+        Insert: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          group_id: string
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["account_status"]
+          updated_at?: string
+        }
+        Update: {
+          archived_at?: string | null
+          created_at?: string
+          description?: string | null
+          group_id?: string
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["account_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_categories_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "account_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["account_status"]
+          type: Database["public"]["Enums"]["account_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["account_status"]
+          type: Database["public"]["Enums"]["account_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["account_status"]
+          type?: Database["public"]["Enums"]["account_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           approved_at: string | null
@@ -86,6 +157,8 @@ export type Database = {
       is_active_user: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      account_status: "ativo" | "arquivado"
+      account_type: "Receita" | "Despesa"
       app_role: "admin" | "viewer"
       user_status: "pending" | "active" | "blocked"
     }
@@ -215,6 +288,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      account_status: ["ativo", "arquivado"],
+      account_type: ["Receita", "Despesa"],
       app_role: ["admin", "viewer"],
       user_status: ["pending", "active", "blocked"],
     },
