@@ -1,7 +1,7 @@
 import { Link, Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, Receipt, CalendarRange, HandCoins, FileBarChart, LogOut, Bell, Menu, ShieldCheck, Clock, Lock } from "lucide-react";
+import { LayoutDashboard, Receipt, CalendarRange, HandCoins, FileBarChart, LogOut, Bell, Menu, ShieldCheck, Clock, Lock, ListTree } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_app")({
 const baseNav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, viewer: true },
   { to: "/movimentacoes", label: "Central de movimentações", icon: Receipt, viewer: false },
+  { to: "/plano-de-contas", label: "Plano de Contas", icon: ListTree, viewer: true },
   { to: "/adiantamentos", label: "Adiantamentos", icon: HandCoins, viewer: true },
   { to: "/eventos", label: "Eventos", icon: CalendarRange, viewer: true },
   { to: "/relatorios", label: "Relatórios", icon: FileBarChart, viewer: true },
