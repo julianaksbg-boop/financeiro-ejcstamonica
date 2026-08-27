@@ -170,9 +170,13 @@ export function useUpdateCategory() {
   const invalidate = useInvalidate();
   return useMutation({
     mutationFn: async ({ id, ...patch }: { id: string; group_id?: string; name?: string; description?: string | null; status?: AccountStatus }) => {
-      const payload: Record<string, unknown> = { ...patch };
-      if (patch.status) payload.archived_at = patch.status === "arquivado" ? new Date().toISOString() : null;
-      const { error } = await supabase.from("account_categories").update(payload).eq("id", id);
+      const { error } = await supabase
+        .from("account_categories")
+        .update({
+          ...patch,
+          ...(patch.status ? { archived_at: patch.status === "arquivado" ? new Date().toISOString() : null } : {}),
+        })
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: invalidate,
