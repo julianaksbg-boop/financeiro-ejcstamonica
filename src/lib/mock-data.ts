@@ -75,6 +75,8 @@ export interface Movimentacao {
   responsavel?: string;
   formaPagamento?: typeof FORMAS_PAGAMENTO[number];
   categoria?: string;
+  categoriaId?: string;
+  categoriaGrupo?: string;
   observacao?: string;
   status: StatusMovimentacao;
   comprovante?: string;
