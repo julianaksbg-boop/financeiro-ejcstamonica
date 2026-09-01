@@ -13,18 +13,18 @@ export const Route = createFileRoute("/_app")({
 });
 
 const baseNav = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, viewer: true },
-  { to: "/movimentacoes", label: "Central de movimentações", icon: Receipt, viewer: false },
-  { to: "/plano-de-contas", label: "Plano de Contas", icon: ListTree, viewer: true },
-  { to: "/adiantamentos", label: "Adiantamentos", icon: HandCoins, viewer: true },
-  { to: "/eventos", label: "Eventos", icon: CalendarRange, viewer: true },
-  { to: "/relatorios", label: "Relatórios", icon: FileBarChart, viewer: true },
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: null },
+  { to: "/movimentacoes", label: "Central de movimentações", icon: Receipt, permission: "movimentacoes" },
+  { to: "/plano-de-contas", label: "Plano de Contas", icon: ListTree, permission: null },
+  { to: "/adiantamentos", label: "Adiantamentos", icon: HandCoins, permission: null },
+  { to: "/eventos", label: "Eventos", icon: CalendarRange, permission: null },
+  { to: "/relatorios", label: "Relatórios", icon: FileBarChart, permission: null },
 ] as const;
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation();
-  const { user, profile, role, isAdmin, signOut } = useAuth();
-  const items = baseNav.filter((i) => isAdmin || i.viewer);
+  const { user, profile, role, permissions, hasPermission, isAdmin, signOut } = useAuth();
+  const items = baseNav.filter((i) => !i.permission || hasPermission(i.permission));
   return (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       <div className="px-5 py-6 border-b border-sidebar-border">
@@ -90,7 +90,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium truncate">{profile?.full_name ?? user?.email ?? "Admin"}</p>
             <p className="text-[10px] text-sidebar-foreground/60">
-              {role === "admin" ? "Administrador financeiro" : role === "viewer" ? "Visualizador" : "—"}
+              {role === "admin"
+                ? "Administrador financeiro"
+                : role === "viewer"
+                  ? permissions.length > 0
+                    ? `Visualizador · ${permissions.length} permissão${permissions.length > 1 ? "es" : ""}`
+                    : "Visualizador"
+                  : "—"}
             </p>
           </div>
           <button onClick={() => signOut()} className="text-sidebar-foreground/60 hover:text-sidebar-accent-foreground p-1.5 rounded">
@@ -205,7 +211,7 @@ function AppLayout() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {role === "viewer" && (
+            {role === "viewer" && permissions.length === 0 && (
               <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full bg-muted text-muted-foreground border">
                 <Lock className="size-3" /> Modo somente leitura
               </span>
