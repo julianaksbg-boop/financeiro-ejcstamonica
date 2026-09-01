@@ -67,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
+  const [permissions, setPermissions] = useState<AppPermission[]>([]);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,14 +78,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfileLoaded(false);
     setProfileError(null);
     if (s?.user) {
-      const { profile: p, role: r, error } = await loadProfileAndRole(s.user.id);
+      const { profile: p, role: r, permissions: perms, error } = await loadProfileAndRole(s.user.id);
       setProfile(p);
       setRole(r);
+      setPermissions(perms);
       setProfileError(error);
       setProfileLoaded(true);
     } else {
       setProfile(null);
       setRole(null);
+      setPermissions([]);
       setProfileLoaded(true);
     }
   };
@@ -104,9 +107,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshProfile = async () => {
     if (!user) return;
     setProfileLoaded(false);
-    const { profile: p, role: r, error } = await loadProfileAndRole(user.id);
+    const { profile: p, role: r, permissions: perms, error } = await loadProfileAndRole(user.id);
     setProfile(p);
     setRole(r);
+    setPermissions(perms);
     setProfileError(error);
     setProfileLoaded(true);
   };
@@ -135,9 +139,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = role === "admin";
   const isViewer = role === "viewer";
   const isActive = profile?.status === "active";
+  const hasPermission = (permission: AppPermission) => isAdmin || permissions.includes(permission);
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, isAdmin, isViewer, isActive, profileLoaded, profileError, signIn, signUp, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{ user, session, profile, role, permissions, hasPermission, loading, isAdmin, isViewer, isActive, profileLoaded, profileError, signIn, signUp, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
