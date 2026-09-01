@@ -163,7 +163,7 @@ function AccessGate({ status }: { status: "pending" | "blocked" | "no-role" | "m
 }
 
 function AppLayout() {
-  const { user, loading, profile, role, profileLoaded, profileError } = useAuth();
+  const { user, loading, profile, role, permissions, profileLoaded, profileError } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
