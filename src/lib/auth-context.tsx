@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import type { AppPermission } from "@/lib/permissoes";
 
 export type AppRole = "admin" | "viewer";
 export type UserStatus = "pending" | "active" | "blocked";
@@ -18,6 +19,7 @@ export interface Profile {
 interface ProfileAndRoleResult {
   profile: Profile | null;
   role: AppRole | null;
+  permissions: AppPermission[];
   error: string | null;
 }
 
@@ -26,6 +28,8 @@ interface AuthContextValue {
   session: Session | null;
   profile: Profile | null;
   role: AppRole | null;
+  permissions: AppPermission[];
+  hasPermission: (permission: AppPermission) => boolean;
   loading: boolean;
   isAdmin: boolean;
   isViewer: boolean;
@@ -41,9 +45,10 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 async function loadProfileAndRole(userId: string): Promise<ProfileAndRoleResult> {
-  const [{ data: p, error: profileError }, { data: r, error: roleError }] = await Promise.all([
+  const [{ data: p, error: profileError }, { data: r, error: roleError }, { data: perms }] = await Promise.all([
     supabase.from("profiles").select("id,email,full_name,status,approved_at,approved_by,created_at").eq("id", userId).maybeSingle(),
     supabase.from("user_roles").select("role").eq("user_id", userId).order("role", { ascending: true }),
+    supabase.from("user_permissions").select("permission").eq("user_id", userId),
   ]);
   // If user has admin role, prefer admin
   const roles = (r ?? []).map((x) => x.role as AppRole);
@@ -51,9 +56,11 @@ async function loadProfileAndRole(userId: string): Promise<ProfileAndRoleResult>
   return {
     profile: (p as Profile | null) ?? null,
     role,
+    permissions: (perms ?? []).map((x) => x.permission as AppPermission),
     error: profileError?.message ?? roleError?.message ?? null,
   };
 }
+
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
