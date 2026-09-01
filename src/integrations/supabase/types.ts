@@ -121,6 +121,69 @@ export type Database = {
         }
         Relationships: []
       }
+      user_invites: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          invited_by: string | null
+          permissions: Database["public"]["Enums"]["app_permission"][]
+          role: Database["public"]["Enums"]["app_role"]
+          status: Database["public"]["Enums"]["invite_status"]
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          permissions?: Database["public"]["Enums"]["app_permission"][]
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["invite_status"]
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          invited_by?: string | null
+          permissions?: Database["public"]["Enums"]["app_permission"][]
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["invite_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_permissions: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          id: string
+          permission: Database["public"]["Enums"]["app_permission"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          permission: Database["public"]["Enums"]["app_permission"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          permission?: Database["public"]["Enums"]["app_permission"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -147,6 +210,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_permission: {
+        Args: {
+          _permission: Database["public"]["Enums"]["app_permission"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -159,7 +229,14 @@ export type Database = {
     Enums: {
       account_status: "ativo" | "arquivado"
       account_type: "Receita" | "Despesa"
+      app_permission:
+        | "movimentacoes"
+        | "plano_contas"
+        | "adiantamentos"
+        | "eventos"
+        | "relatorios"
       app_role: "admin" | "viewer"
+      invite_status: "pending" | "accepted" | "cancelled"
       user_status: "pending" | "active" | "blocked"
     }
     CompositeTypes: {
@@ -290,7 +367,15 @@ export const Constants = {
     Enums: {
       account_status: ["ativo", "arquivado"],
       account_type: ["Receita", "Despesa"],
+      app_permission: [
+        "movimentacoes",
+        "plano_contas",
+        "adiantamentos",
+        "eventos",
+        "relatorios",
+      ],
       app_role: ["admin", "viewer"],
+      invite_status: ["pending", "accepted", "cancelled"],
       user_status: ["pending", "active", "blocked"],
     },
   },
