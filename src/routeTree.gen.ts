@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppPlanoDeContasRouteImport } from './routes/_app.plano-de-contas'
 import { Route as AppMovimentacoesRouteImport } from './routes/_app.movimentacoes'
+import { Route as AppFluxoDeCaixaRouteImport } from './routes/_app.fluxo-de-caixa'
 import { Route as AppEventosRouteImport } from './routes/_app.eventos'
 import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
 import { Route as AppAdministracaoRouteImport } from './routes/_app.administracao'
@@ -55,6 +56,11 @@ const AppMovimentacoesRoute = AppMovimentacoesRouteImport.update({
   path: '/movimentacoes',
   getParentRoute: () => AppRoute,
 } as any)
+const AppFluxoDeCaixaRoute = AppFluxoDeCaixaRouteImport.update({
+  id: '/fluxo-de-caixa',
+  path: '/fluxo-de-caixa',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventosRoute = AppEventosRouteImport.update({
   id: '/eventos',
   path: '/eventos',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/administracao': typeof AppAdministracaoRoute
   '/dashboard': typeof AppDashboardRoute
   '/eventos': typeof AppEventosRoute
+  '/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/movimentacoes': typeof AppMovimentacoesRoute
   '/plano-de-contas': typeof AppPlanoDeContasRoute
   '/relatorios': typeof AppRelatoriosRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/administracao': typeof AppAdministracaoRoute
   '/dashboard': typeof AppDashboardRoute
   '/eventos': typeof AppEventosRoute
+  '/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/movimentacoes': typeof AppMovimentacoesRoute
   '/plano-de-contas': typeof AppPlanoDeContasRoute
   '/relatorios': typeof AppRelatoriosRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_app/administracao': typeof AppAdministracaoRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/eventos': typeof AppEventosRoute
+  '/_app/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/_app/movimentacoes': typeof AppMovimentacoesRoute
   '/_app/plano-de-contas': typeof AppPlanoDeContasRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/dashboard'
     | '/eventos'
+    | '/fluxo-de-caixa'
     | '/movimentacoes'
     | '/plano-de-contas'
     | '/relatorios'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/dashboard'
     | '/eventos'
+    | '/fluxo-de-caixa'
     | '/movimentacoes'
     | '/plano-de-contas'
     | '/relatorios'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_app/administracao'
     | '/_app/dashboard'
     | '/_app/eventos'
+    | '/_app/fluxo-de-caixa'
     | '/_app/movimentacoes'
     | '/_app/plano-de-contas'
     | '/_app/relatorios'
@@ -212,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMovimentacoesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/fluxo-de-caixa': {
+      id: '/_app/fluxo-de-caixa'
+      path: '/fluxo-de-caixa'
+      fullPath: '/fluxo-de-caixa'
+      preLoaderRoute: typeof AppFluxoDeCaixaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/eventos': {
       id: '/_app/eventos'
       path: '/eventos'
@@ -248,6 +267,7 @@ interface AppRouteChildren {
   AppAdministracaoRoute: typeof AppAdministracaoRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppEventosRoute: typeof AppEventosRoute
+  AppFluxoDeCaixaRoute: typeof AppFluxoDeCaixaRoute
   AppMovimentacoesRoute: typeof AppMovimentacoesRoute
   AppPlanoDeContasRoute: typeof AppPlanoDeContasRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
@@ -258,6 +278,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAdministracaoRoute: AppAdministracaoRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppEventosRoute: AppEventosRoute,
+  AppFluxoDeCaixaRoute: AppFluxoDeCaixaRoute,
   AppMovimentacoesRoute: AppMovimentacoesRoute,
   AppPlanoDeContasRoute: AppPlanoDeContasRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
