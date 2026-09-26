@@ -1,7 +1,7 @@
 import { Link, Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, Receipt, CalendarRange, HandCoins, FileBarChart, LogOut, Bell, Menu, ShieldCheck, Clock, Lock, ListTree } from "lucide-react";
+import { LayoutDashboard, Receipt, CalendarRange, HandCoins, FileBarChart, LogOut, Bell, Menu, ShieldCheck, Clock, Lock, ListTree, ArrowDownUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +16,7 @@ const baseNav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: null },
   { to: "/movimentacoes", label: "Central de movimentações", icon: Receipt, permission: "movimentacoes" },
   { to: "/plano-de-contas", label: "Plano de Contas", icon: ListTree, permission: null },
+  { to: "/fluxo-de-caixa", label: "Fluxo de Caixa", icon: ArrowDownUp, permission: null },
   { to: "/adiantamentos", label: "Adiantamentos", icon: HandCoins, permission: null },
   { to: "/eventos", label: "Eventos", icon: CalendarRange, permission: null },
   { to: "/relatorios", label: "Relatórios", icon: FileBarChart, permission: null },
