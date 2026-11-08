@@ -16,7 +16,14 @@ import {
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/_app/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Financeiro EJC" }] }),
+  head: () => ({ meta: [
+    { title: "Dashboard — Financeiro EJC" },
+    { name: "description", content: "Visão geral das receitas, despesas e resultados financeiros do EJC." },
+    { property: "og:title", content: "Dashboard — Financeiro EJC" },
+    { property: "og:description", content: "Visão geral das receitas, despesas e resultados financeiros do EJC." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: DashboardPage,
 });
 

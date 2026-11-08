@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -31,7 +32,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   useEffect(() => { reportLovableError(error, { boundary: "tanstack_root_error_component" }); }, [error]);
   return (
@@ -61,8 +62,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Financeiro EJC — Gestão Financeira" },
       { property: "og:description", content: "Painel Financeiro do EJC Santa Mônica e Santa Elena Guerra — controle de receitas e despesas, resumo de eventos, adiantamentos e dashboards." },
       { name: "twitter:description", content: "Painel Financeiro do EJC Santa Mônica e Santa Elena Guerra — controle de receitas e despesas, resumo de eventos, adiantamentos e dashboards." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/506b4e2a-95f0-491b-9a08-71bdd97c40c8/id-preview-5b6d87b7--839de5a4-f89b-4d36-b26c-4307f4e71e1b.lovable.app-1780972972263.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/506b4e2a-95f0-491b-9a08-71bdd97c40c8/id-preview-5b6d87b7--839de5a4-f89b-4d36-b26c-4307f4e71e1b.lovable.app-1780972972263.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],

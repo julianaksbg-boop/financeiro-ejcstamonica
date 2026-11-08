@@ -10,7 +10,14 @@ import { toast } from "sonner";
 import ejcLogo from "@/assets/ejc-logo-vermelho.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Entrar — Financeiro EJC" }] }),
+  head: () => ({ meta: [
+    { title: "Entrar — Financeiro EJC" },
+    { name: "description", content: "Entre na sua conta para acessar o sistema financeiro do EJC." },
+    { property: "og:title", content: "Entrar — Financeiro EJC" },
+    { property: "og:description", content: "Entre na sua conta para acessar o sistema financeiro do EJC." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AuthPage,
 });
 

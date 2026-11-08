@@ -6,7 +6,14 @@ import { CalendarRange, Plus, ArrowUpRight, ArrowDownRight } from "lucide-react"
 import { EVENTOS, MOVIMENTACOES, formatBRL } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/_app/eventos")({
-  head: () => ({ meta: [{ title: "Eventos — Financeiro EJC" }] }),
+  head: () => ({ meta: [
+    { title: "Eventos — Financeiro EJC" },
+    { name: "description", content: "Acompanhe receitas, despesas e resultados por evento do EJC." },
+    { property: "og:title", content: "Eventos — Financeiro EJC" },
+    { property: "og:description", content: "Acompanhe receitas, despesas e resultados por evento do EJC." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: EventosPage,
 });
 
