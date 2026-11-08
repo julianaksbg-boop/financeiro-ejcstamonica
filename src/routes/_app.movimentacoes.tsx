@@ -13,13 +13,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   ArrowDownRight, ArrowUpRight, Search, Sparkles, Upload, Plus,
-  Columns3, ArrowUpDown, PartyPopper, HandCoins,
+   Columns3, ArrowUpDown, PartyPopper, HandCoins, X, FileSpreadsheet, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { EVENTOS, FORMAS_PAGAMENTO, formatBRL, type Movimentacao } from "@/lib/mock-data";
 import { useMovimentacoes } from "@/lib/movimentacoes-store";
 import { buildSugestoes, sugestaoPara } from "@/lib/sugestoes";
 import { ResumoCards } from "@/components/movimentacoes/resumo-cards";
-import { SidePanel } from "@/components/movimentacoes/side-panel";
 import { ImportWizard } from "@/components/movimentacoes/import-wizard";
 import { ClassifySheet } from "@/components/movimentacoes/classify-sheet";
 import { BulkBar } from "@/components/movimentacoes/bulk-bar";
@@ -138,25 +137,24 @@ function CentralPage() {
   const colVisible = (c: Col) => !hiddenCols.has(c);
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6 max-w-[1600px] mx-auto">
-      <div className="space-y-5 min-w-0">
+    <div className="max-w-[1600px] mx-auto min-w-0">
+      <div className="space-y-6 min-w-0">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Central de movimentações</h1>
-            <p className="text-sm text-muted-foreground mt-1">Importe, classifique e acompanhe o financeiro do EJC em um só lugar.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold">Central de movimentações</h1>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={openNew}><Plus className="size-4 mr-1" /> Novo lançamento</Button>
-            <Button onClick={() => setImportOpen(true)}><Upload className="size-4 mr-1" /> Importar extrato</Button>
+          <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
+            <Button variant="outline" className="px-3" onClick={openNew}><Plus className="size-4" /> Novo lançamento</Button>
+            <Button className="px-3" onClick={() => setImportOpen(true)}><Upload className="size-4" /> Importar extrato</Button>
           </div>
         </div>
 
         <ResumoCards items={items} lastUpdate={lastImport?.importedAt} />
 
-        <Card className="p-4 shadow-card">
-          <div className="flex items-center justify-between mb-2">
+        <section aria-label="Progresso da classificação" className="border-b pb-5">
+          <div className="flex items-center justify-between gap-3 mb-3">
             <p className="text-sm font-medium">
-              {items.length} movimentações · <span className="text-success">{totalClass} classificadas</span> · <span className="text-warning">{items.length - totalClass} pendentes</span>
+              Classificação <span className="text-muted-foreground font-normal">· {totalClass} de {items.length} movimentações</span>
             </p>
             <span className="text-sm font-bold tabular-nums">{progresso}%</span>
           </div>
@@ -166,43 +164,48 @@ function CentralPage() {
               <PartyPopper className="size-4" /> Todas as movimentações foram classificadas. Excelente trabalho!
             </div>
           )}
-        </Card>
+        </section>
 
-        <Card className="p-3 shadow-card">
+        {lastImport && (
+          <details className="border-b pb-4 text-sm">
+            <summary className="cursor-pointer text-muted-foreground"><FileSpreadsheet className="inline size-4 mr-2 text-primary" />Último extrato: <span className="break-all">{lastImport.fileName}</span></summary>
+            <p className="mt-2 text-xs text-muted-foreground">{lastImport.count} novas movimentações · Importado em {new Date(lastImport.importedAt).toLocaleString("pt-BR")}</p>
+          </details>
+        )}
+
+        <section aria-label="Filtros de movimentações" className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
+            <div className="relative w-full sm:flex-1 sm:min-w-64">
+              <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input aria-label="Buscar movimentações" placeholder="Buscar fornecedor, evento, valor..." className="pl-9 h-10" value={busca} onChange={(e) => { setBusca(e.target.value); setPage(1); }} />
+            </div>
+            <Select value={filtroEvento} onValueChange={(v) => { setFiltroEvento(v); setPage(1); }}>
+              <SelectTrigger aria-label="Filtrar por evento" className="h-10 flex-1 sm:flex-none sm:w-[180px]"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="__all">Todos os eventos</SelectItem>{EVENTOS.map((e) => <SelectItem key={e.id} value={e.nome}>{e.nome}</SelectItem>)}</SelectContent>
+            </Select>
+            <Select value={filtroForma} onValueChange={(v) => { setFiltroForma(v); setPage(1); }}>
+              <SelectTrigger aria-label="Filtrar por forma de pagamento" className="h-10 flex-1 sm:flex-none sm:w-[170px]"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="__all">Todas as formas</SelectItem>{FORMAS_PAGAMENTO.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-wrap items-center gap-1">
             {([
               ["todas", "Todas"], ["pendentes", "Pendentes"], ["classificadas", "Classificadas"],
               ["receitas", "Receitas"], ["despesas", "Despesas"], ["adiantamentos", "Adiantamentos"],
               ["com-sugestao", "Com sugestão"], ["sem-sugestao", "Sem sugestão"],
             ] as [FiltroChip, string][]).map(([k, label]) => (
               <Button key={k} size="sm" variant={filtro === k ? "default" : "ghost"}
-                className={cn("h-8 rounded-full text-xs", filtro !== k && "text-muted-foreground")}
+                aria-pressed={filtro === k}
+                className={cn("h-9 rounded-md text-xs", filtro !== k && "text-muted-foreground")}
                 onClick={() => { setFiltro(k); setPage(1); }}>
                 {label}
               </Button>
             ))}
-            <div className="h-6 w-px bg-border mx-1" />
-            <Select value={filtroEvento} onValueChange={(v) => { setFiltroEvento(v); setPage(1); }}>
-              <SelectTrigger className="h-8 w-[150px] text-xs"><SelectValue placeholder="Evento" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all">Todos os eventos</SelectItem>
-                {EVENTOS.map((e) => <SelectItem key={e.id} value={e.nome}>{e.nome}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filtroForma} onValueChange={(v) => { setFiltroForma(v); setPage(1); }}>
-              <SelectTrigger className="h-8 w-[140px] text-xs"><SelectValue placeholder="Forma pgto" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="__all">Todas as formas</SelectItem>
-                {FORMAS_PAGAMENTO.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <div className="relative ml-auto w-full sm:w-64">
-              <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder="Buscar fornecedor, evento, valor..." className="pl-9 h-9" value={busca} onChange={(e) => { setBusca(e.target.value); setPage(1); }} />
-            </div>
+            {(filtro !== "todas" || filtroEvento !== "__all" || filtroForma !== "__all" || busca) && <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => { setFiltro("todas"); setFiltroEvento("__all"); setFiltroForma("__all"); setBusca(""); setPage(1); }}><X className="size-3.5" />Limpar filtros</Button>}
+            <span className="ml-auto text-xs text-muted-foreground tabular-nums px-2">{filtered.length} resultados</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-9"><Columns3 className="size-4" /></Button>
+                <Button variant="outline" size="sm" className="h-9" aria-label="Escolher colunas" title="Escolher colunas"><Columns3 className="size-4" /><span className="hidden sm:inline">Colunas</span></Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Colunas</DropdownMenuLabel>
@@ -219,31 +222,31 @@ function CentralPage() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </Card>
+        </section>
 
         {selected.size > 0 && <BulkBar ids={[...selected]} onClear={() => setSelected(new Set())} />}
 
-        <Card className="shadow-card overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+        <Card className="gap-0 rounded-lg shadow-card overflow-hidden py-0">
+          <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="Tabela de movimentações">
+            <table className="w-full min-w-[1050px] text-sm">
               <thead className="bg-secondary/50 text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
-                  <th className="px-3 py-3 w-10"><Checkbox checked={allPagedSelected} onCheckedChange={togglePageAll} /></th>
+                  <th className="px-3 py-3 w-10"><Checkbox aria-label="Selecionar movimentações da página" checked={allPagedSelected} onCheckedChange={togglePageAll} /></th>
                   {colVisible("status") && <th className="text-left px-3 py-3 font-medium w-28">Status</th>}
                   {colVisible("data") && (
                     <th className="text-left px-3 py-3 font-medium whitespace-nowrap">
-                      <button className="flex items-center gap-1 hover:text-foreground" onClick={() => toggleSort("data")}>Data <ArrowUpDown className="size-3" /></button>
+                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent" onClick={() => toggleSort("data")}>Data <ArrowUpDown className="size-3" /></Button>
                     </th>
                   )}
                   {colVisible("descricao") && <th className="text-left px-3 py-3 font-medium">Descrição</th>}
                   {colVisible("fornecedor") && (
                     <th className="text-left px-3 py-3 font-medium">
-                      <button className="flex items-center gap-1 hover:text-foreground" onClick={() => toggleSort("nome")}>Fornecedor <ArrowUpDown className="size-3" /></button>
+                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:bg-transparent" onClick={() => toggleSort("nome")}>Fornecedor <ArrowUpDown className="size-3" /></Button>
                     </th>
                   )}
                   {colVisible("valor") && (
                     <th className="text-right px-3 py-3 font-medium">
-                      <button className="flex items-center gap-1 ml-auto hover:text-foreground" onClick={() => toggleSort("valor")}>Valor <ArrowUpDown className="size-3" /></button>
+                      <Button variant="ghost" size="sm" className="h-auto p-0 ml-auto hover:bg-transparent" onClick={() => toggleSort("valor")}>Valor <ArrowUpDown className="size-3" /></Button>
                     </th>
                   )}
                   {colVisible("evento") && <th className="text-left px-3 py-3 font-medium">Evento</th>}
@@ -268,7 +271,7 @@ function CentralPage() {
                         selected.has(m.id) && "bg-primary/5",
                       )}>
                       <td className="px-3 py-3">
-                        <Checkbox checked={selected.has(m.id)} onCheckedChange={() => {
+                        <Checkbox aria-label={`Selecionar ${m.nome}`} checked={selected.has(m.id)} onCheckedChange={() => {
                           const next = new Set(selected);
                           if (next.has(m.id)) next.delete(m.id); else next.add(m.id);
                           setSelected(next);
@@ -293,15 +296,15 @@ function CentralPage() {
                       )}
                       {colVisible("descricao") && (
                         <td className="px-3 py-3 max-w-[200px]">
-                          <div className="text-xs text-muted-foreground truncate">{m.detalhe || m.tipoTransacao}</div>
+                          <div className="text-xs text-muted-foreground line-clamp-2" title={m.detalhe || m.tipoTransacao}>{m.detalhe || m.tipoTransacao}</div>
                         </td>
                       )}
                       {colVisible("fornecedor") && (
-                        <td className="px-3 py-3 font-medium max-w-[180px] truncate" title={m.nome}>{m.nome}</td>
+                        <td className="px-3 py-3 font-medium min-w-[160px] max-w-[220px] break-words" title={m.nome}>{m.nome}</td>
                       )}
                       {colVisible("valor") && (
                         <td className="px-3 py-3 text-right">
-                          <div className={`inline-flex items-center gap-1 font-semibold tabular-nums ${m.valor >= 0 ? "text-success" : "text-destructive"}`}>
+                          <div className={`inline-flex items-center gap-1 font-semibold tabular-nums whitespace-nowrap ${m.valor >= 0 ? "text-success" : "text-destructive"}`}>
                             {m.valor >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
                             {formatBRL(Math.abs(m.valor))}
                           </div>
@@ -326,23 +329,15 @@ function CentralPage() {
               </tbody>
             </table>
           </div>
-          {pages > 1 && (
-            <div className="flex items-center justify-between p-3 border-t bg-secondary/30">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 border-t bg-secondary/30">
               <p className="text-xs text-muted-foreground">Página {page} de {pages} · {filtered.length} resultados</p>
               <div className="flex gap-1">
-                <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</Button>
-                <Button size="sm" variant="outline" disabled={page === pages} onClick={() => setPage(page + 1)}>Próxima</Button>
+                <Button size="sm" variant="outline" disabled={page === 1} onClick={() => setPage(page - 1)}><ChevronLeft className="size-4" />Anterior</Button>
+                <Button size="sm" variant="outline" disabled={page === pages} onClick={() => setPage(page + 1)}>Próxima<ChevronRight className="size-4" /></Button>
               </div>
             </div>
-          )}
         </Card>
       </div>
-
-      <aside className="hidden xl:block">
-        <div className="sticky top-20">
-          <SidePanel items={items} lastImport={lastImport} />
-        </div>
-      </aside>
 
       <ImportWizard open={importOpen} onOpenChange={setImportOpen} />
       <ClassifySheet
