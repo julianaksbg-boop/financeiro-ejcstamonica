@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { MOVIMENTACOES, type Movimentacao } from "./mock-data";
+import { type Movimentacao } from "./mock-data";
+import { removeDemoMovements } from "./financial-data";
 
 export const movKey = (m: Pick<Movimentacao, "data" | "hora" | "valor" | "nome">) =>
   `${m.data}|${m.hora}|${m.valor}|${m.nome}`.toLowerCase();
@@ -19,7 +20,7 @@ interface MovState {
 export const useMovimentacoes = create<MovState>()(
   persist(
     (set, get) => ({
-      items: MOVIMENTACOES,
+      items: [],
       addMany: (newItems, meta) => {
         const existing = new Set(get().items.map(movKey));
         const toAdd = newItems.filter((m) => !existing.has(movKey(m)));
@@ -37,8 +38,15 @@ export const useMovimentacoes = create<MovState>()(
         set({ items: get().items.map((m) => (set2.has(m.id) ? { ...m, ...patch } : m)) });
       },
       hasKey: (k) => get().items.some((m) => movKey(m) === k),
-      reset: () => set({ items: MOVIMENTACOES, lastImport: undefined }),
+      reset: () => set({ items: [], lastImport: undefined }),
     }),
-    { name: "ejc-movimentacoes-v2" },
+    {
+      name: "ejc-movimentacoes-v2",
+      version: 1,
+      migrate: (persisted) => {
+        const previous = persisted as Partial<MovState>;
+        return { ...previous, items: removeDemoMovements(previous.items ?? []) };
+      },
+    },
   ),
 );
