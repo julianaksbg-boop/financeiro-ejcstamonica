@@ -254,7 +254,7 @@ function CentralPage() {
                   {colVisible("forma") && <th className="text-left px-3 py-3 font-medium">Forma</th>}
                   {colVisible("categoria") && <th className="text-left px-3 py-3 font-medium">Categoria</th>}
                   {colVisible("obs") && <th className="text-left px-3 py-3 font-medium">Obs.</th>}
-                  <th className="px-3 py-3 w-24"></th>
+                  <th className="px-3 py-3 w-24 sticky right-0 bg-card border-l">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -315,7 +315,7 @@ function CentralPage() {
                       {colVisible("forma") && <td className="px-3 py-3 text-xs">{m.formaPagamento ?? "—"}</td>}
                       {colVisible("categoria") && <td className="px-3 py-3 text-xs">{m.categoria ?? "—"}</td>}
                       {colVisible("obs") && <td className="px-3 py-3 text-xs max-w-[160px] truncate" title={m.observacao}>{m.observacao ?? "—"}</td>}
-                      <td className="px-3 py-3 text-right">
+                      <td className="px-3 py-3 text-right sticky right-0 bg-card border-l">
                         <Button size="sm" variant={isClass ? "ghost" : "default"} onClick={() => { setIsNew(false); setSheetItem(m); }}>
                           {isClass ? "Ver" : "Classificar"}
                         </Button>

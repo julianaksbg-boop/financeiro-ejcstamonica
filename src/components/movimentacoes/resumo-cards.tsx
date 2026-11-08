@@ -19,9 +19,9 @@ export function ResumoCards({ items, lastUpdate }: { items: Movimentacao[]; last
 
   return (
     <section aria-label="Resumo das movimentações" className="space-y-4">
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {cards.map(({ label, value, icon: Icon, tone, bg }) => (
-        <Card key={label} className="min-w-0 gap-0 rounded-lg p-4 shadow-card">
+        <Card key={label} className={`min-w-0 gap-0 rounded-lg p-3 sm:p-4 shadow-card ${label === "Total movimentado" ? "col-span-2 sm:col-span-1" : ""}`}>
           <div className="flex items-center gap-2">
             <div className={`size-8 rounded-lg ${bg} flex items-center justify-center shrink-0`}>
               <Icon className={`size-4 ${tone}`} />
