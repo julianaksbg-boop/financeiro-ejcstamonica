@@ -9,22 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
-import { Route as AppPlanoDeContasRouteImport } from './routes/_app.plano-de-contas'
-import { Route as AppMovimentacoesRouteImport } from './routes/_app.movimentacoes'
-import { Route as AppFluxoDeCaixaRouteImport } from './routes/_app.fluxo-de-caixa'
-import { Route as AppEventosRouteImport } from './routes/_app.eventos'
-import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
-import { Route as AppAdministracaoRouteImport } from './routes/_app.administracao'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AppAdiantamentosRouteImport } from './routes/_app.adiantamentos'
+import { Route as AppAdministracaoRouteImport } from './routes/_app.administracao'
+import { Route as AppDashboardRouteImport } from './routes/_app.dashboard'
+import { Route as AppEventosRouteImport } from './routes/_app.eventos'
+import { Route as AppFluxoDeCaixaRouteImport } from './routes/_app.fluxo-de-caixa'
+import { Route as AppMovimentacoesRouteImport } from './routes/_app.movimentacoes'
+import { Route as AppPlanoDeContasRouteImport } from './routes/_app.plano-de-contas'
+import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -32,43 +36,14 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
-  id: '/relatorios',
-  path: '/relatorios',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPlanoDeContasRoute = AppPlanoDeContasRouteImport.update({
-  id: '/plano-de-contas',
-  path: '/plano-de-contas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMovimentacoesRoute = AppMovimentacoesRouteImport.update({
-  id: '/movimentacoes',
-  path: '/movimentacoes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppFluxoDeCaixaRoute = AppFluxoDeCaixaRouteImport.update({
-  id: '/fluxo-de-caixa',
-  path: '/fluxo-de-caixa',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEventosRoute = AppEventosRouteImport.update({
-  id: '/eventos',
-  path: '/eventos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppDashboardRoute = AppDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const AppAdiantamentosRoute = AppAdiantamentosRouteImport.update({
+  id: '/adiantamentos',
+  path: '/adiantamentos',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAdministracaoRoute = AppAdministracaoRouteImport.update({
@@ -76,9 +51,34 @@ const AppAdministracaoRoute = AppAdministracaoRouteImport.update({
   path: '/administracao',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAdiantamentosRoute = AppAdiantamentosRouteImport.update({
-  id: '/adiantamentos',
-  path: '/adiantamentos',
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventosRoute = AppEventosRouteImport.update({
+  id: '/eventos',
+  path: '/eventos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFluxoDeCaixaRoute = AppFluxoDeCaixaRouteImport.update({
+  id: '/fluxo-de-caixa',
+  path: '/fluxo-de-caixa',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMovimentacoesRoute = AppMovimentacoesRouteImport.update({
+  id: '/movimentacoes',
+  path: '/movimentacoes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPlanoDeContasRoute = AppPlanoDeContasRouteImport.update({
+  id: '/plano-de-contas',
+  path: '/plano-de-contas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRelatoriosRoute = AppRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -175,18 +175,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
@@ -196,53 +189,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/relatorios': {
-      id: '/_app/relatorios'
-      path: '/relatorios'
-      fullPath: '/relatorios'
-      preLoaderRoute: typeof AppRelatoriosRouteImport
-      parentRoute: typeof AppRoute
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_app/plano-de-contas': {
-      id: '/_app/plano-de-contas'
-      path: '/plano-de-contas'
-      fullPath: '/plano-de-contas'
-      preLoaderRoute: typeof AppPlanoDeContasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/movimentacoes': {
-      id: '/_app/movimentacoes'
-      path: '/movimentacoes'
-      fullPath: '/movimentacoes'
-      preLoaderRoute: typeof AppMovimentacoesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/fluxo-de-caixa': {
-      id: '/_app/fluxo-de-caixa'
-      path: '/fluxo-de-caixa'
-      fullPath: '/fluxo-de-caixa'
-      preLoaderRoute: typeof AppFluxoDeCaixaRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/eventos': {
-      id: '/_app/eventos'
-      path: '/eventos'
-      fullPath: '/eventos'
-      preLoaderRoute: typeof AppEventosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/dashboard': {
-      id: '/_app/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AppDashboardRouteImport
+    '/_app/adiantamentos': {
+      id: '/_app/adiantamentos'
+      path: '/adiantamentos'
+      fullPath: '/adiantamentos'
+      preLoaderRoute: typeof AppAdiantamentosRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/administracao': {
@@ -252,11 +217,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdministracaoRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/adiantamentos': {
-      id: '/_app/adiantamentos'
-      path: '/adiantamentos'
-      fullPath: '/adiantamentos'
-      preLoaderRoute: typeof AppAdiantamentosRouteImport
+    '/_app/dashboard': {
+      id: '/_app/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/eventos': {
+      id: '/_app/eventos'
+      path: '/eventos'
+      fullPath: '/eventos'
+      preLoaderRoute: typeof AppEventosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/fluxo-de-caixa': {
+      id: '/_app/fluxo-de-caixa'
+      path: '/fluxo-de-caixa'
+      fullPath: '/fluxo-de-caixa'
+      preLoaderRoute: typeof AppFluxoDeCaixaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/movimentacoes': {
+      id: '/_app/movimentacoes'
+      path: '/movimentacoes'
+      fullPath: '/movimentacoes'
+      preLoaderRoute: typeof AppMovimentacoesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/plano-de-contas': {
+      id: '/_app/plano-de-contas'
+      path: '/plano-de-contas'
+      fullPath: '/plano-de-contas'
+      preLoaderRoute: typeof AppPlanoDeContasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/relatorios': {
+      id: '/_app/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AppRelatoriosRouteImport
       parentRoute: typeof AppRoute
     }
   }

@@ -23,6 +23,10 @@ export const Route = createFileRoute("/_app/administracao")({
     meta: [
       { title: "Administração — Financeiro EJC" },
       { name: "description", content: "Gestão de usuários, convites e permissões do sistema financeiro do EJC." },
+      { property: "og:title", content: "Administração — Financeiro EJC" },
+      { property: "og:description", content: "Gestão de usuários, convites e permissões do sistema financeiro do EJC." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminPage,

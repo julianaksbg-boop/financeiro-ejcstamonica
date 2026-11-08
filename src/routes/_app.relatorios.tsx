@@ -6,7 +6,14 @@ import { FileText, Download, FileSpreadsheet } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/relatorios")({
-  head: () => ({ meta: [{ title: "Relatórios — Financeiro EJC" }] }),
+  head: () => ({ meta: [
+    { title: "Relatórios — Financeiro EJC" },
+    { name: "description", content: "Consulte demonstrativos e prestações de contas financeiras do EJC." },
+    { property: "og:title", content: "Relatórios — Financeiro EJC" },
+    { property: "og:description", content: "Consulte demonstrativos e prestações de contas financeiras do EJC." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: RelatoriosPage,
 });
 

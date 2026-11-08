@@ -7,7 +7,14 @@ import { HandCoins, Plus, FileCheck2 } from "lucide-react";
 import { ADIANTAMENTOS, formatBRL } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/_app/adiantamentos")({
-  head: () => ({ meta: [{ title: "Adiantamentos — Financeiro EJC" }] }),
+  head: () => ({ meta: [
+    { title: "Adiantamentos — Financeiro EJC" },
+    { name: "description", content: "Controle adiantamentos e acompanhe as prestações de contas das equipes do EJC." },
+    { property: "og:title", content: "Adiantamentos — Financeiro EJC" },
+    { property: "og:description", content: "Controle adiantamentos e acompanhe as prestações de contas das equipes do EJC." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: AdiantamentosPage,
 });
 
